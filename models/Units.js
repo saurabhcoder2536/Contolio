@@ -1,0 +1,52 @@
+const mongoose=require('mongoose');
+const Schema=mongoose.Schema({
+UnitNo:{
+    type:Number,
+    required:true
+},
+BuildingId:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'buildings'
+},
+Address:{
+    type:String,
+},
+Rooms:{
+    type:Number,
+    Required:true
+},
+Bathrooms:{
+    type:Number,
+    Required:true
+},
+Area:{
+    type:String,
+    Required:true
+},
+Currency:{
+    type:String,
+    enum:["$","INR"],
+    required:true
+},
+MonthlyRent:{
+    type:Number,
+    Required:true
+},
+UnitPicture:{
+   type:String
+},
+Description:{
+    type:String,
+    Required:true
+},
+OwnerId:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:"owners"
+},
+TenantId:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:"tenants"
+}
+})
+const UnitsAvailable=mongoose.model('UnitsAvailable',Schema);
+module.exports=UnitsAvailable;
