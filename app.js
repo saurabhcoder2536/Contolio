@@ -27,3 +27,4 @@ app.listen(3000,()=>{
   console.log('server is connected')
 })
 console.log(2+3);
+console.log(5+4);
