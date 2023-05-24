@@ -2,6 +2,7 @@ const UnitsAvailable=require('../models/Units');
 const BuildingId=require('../models/Buildings');
 const TenantDetails=require('../models/Tenant');
 const { default: mongoose, mongo } = require('mongoose');
+const response=require('../helper/response')
 exports.NewUnits=async(req,res)=>{
     try{
     const newImage=new UnitsAvailable({
@@ -17,21 +18,21 @@ exports.NewUnits=async(req,res)=>{
         OwnerId:req.body.OwnerId
     })
     newImage.save().then(()=>{
-        res.send('succesfully uploaded')
+       return response.successResponse(res,"sucessfully uploaded")
     }).catch(err=>{
         res.send(err.message)
     })
 }catch(err){
-    res.status(400).json(err.message)
+    return response.failedResponse(res,err.message)
 }
 }
 exports.ShowUnits=async(req,res)=>{
     try{
   const ShowUnits=await UnitsAvailable.find({})
-   res.status(200).json({ShowUnits});
+  return response.successResponse(res,ShowUnits)
     }
     catch(err){
-        res.status(400).json({message:err.message})
+        return response.failedResponse(res,err.message)
     }
 }
 exports.UnitDetails=async(req,res)=>{
@@ -52,9 +53,9 @@ exports.UnitDetails=async(req,res)=>{
         "OwnerId":0
         }
     }])
-    res.status(200).json({UnitDetails})
+    return response.successResponse(res,UnitDetails)
 }catch(err){
-    res.status(400).json({message:err.message})
+    return response.failedResponse(res,err.message)
 }
 }
 exports.UnitDetailsTenantWise=async(req,res)=>{
@@ -79,10 +80,10 @@ exports.UnitDetailsTenantWise=async(req,res)=>{
             "OwnerId":0
         }
      }])
-     res.status(200).json({UnitDetailsTenantWise})
+     return response.successResponse(res,UnitDetailsTenantWise)
     }
     catch(err){
-        res.status(400).json({message:err.message})
+        return response.failedResponse(res,err.message)
     }
 }
 exports.UnitDetailsDocWise=async(req,res)=>{
@@ -128,10 +129,10 @@ exports.UnitDetailsDocWise=async(req,res)=>{
             as:"BuildingDetails"
         }
     }])
-    res.status(200).json(FilteredDataDocWise)
+    return response.successResponse(res,FilteredDataDocWise)
     }
     catch(err){
-        res.status(400).json({message:err.message})
+        return response.failedResponse(res,err.message)
     }
 }
 exports.UpdateUnitDetails=async(req,res)=>{
@@ -151,10 +152,10 @@ const UpdateUnitDetails=await UnitsAvailable.findByIdAndUpdate(
     req.params._id,
     Payload
 )
-res.status(200).json(UpdateUnitDetails)
+return response.successResponse(res,UpdateUnitDetails)
 }
 catch(err){
-    res.status(400).json({message:err.message})
+    return response.failedResponse(res,err.message)
 }
 }
 exports.RemoveUnitDetails=async(req,res)=>{
@@ -162,9 +163,9 @@ exports.RemoveUnitDetails=async(req,res)=>{
    const RemoveUnitDetails=await UnitsAvailable.deleteOne({
     _id:req.params._id
    })
-   res.status(200).json(RemoveUnitDetails)
+   return response.successResponse(res,RemoveUnitDetails)
     }
     catch(err){
-        res.status(400).json({message:err.message})
+        return response.failedResponse(res,err.message)
     }
 }

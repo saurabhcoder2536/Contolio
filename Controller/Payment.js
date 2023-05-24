@@ -1,5 +1,6 @@
 const Payment = require("../models/Payment");
 const Tenant = require("../models/Tenant");
+const response=require('../helper/response')
 exports.AddPaymentByCheque = async (req, res) => {
   try {
     const TenantPaymentStatus = await Tenant.find();
@@ -26,9 +27,9 @@ exports.AddPaymentByCheque = async (req, res) => {
         break;
       }
     }
-    res.status(200).json({ message: "Payment added Succesfully" });
+    return response.successResponse(res,"payment added successfully")
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    return response.failedResponse(res,err.message)
   }
 };
 
@@ -51,9 +52,9 @@ exports.AddPaymentManually = async (req, res) => {
         break;
       }
     }
-    res.status(200).json({ message: "Payment added Succesfully Manual" });
+    return response.successResponse(res,"payment added successfully manually")
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    return response.failedResponse(res,err.message)
   }
 };
 exports.ShowPaymentByCheque=async(req,res)=>{
@@ -84,10 +85,10 @@ exports.ShowPaymentByCheque=async(req,res)=>{
         as:"BuildingDetails"
       }
     }])
-    res.status(200).json(ChequePayment)
+    return response.successResponse(res,ChequePayment)
   }
   catch(err){
-    res.status(400).json({message:err.message})
+    return response.failedResponse(res,err.message)
   }
 }
 exports.ShowPaymentManually=async(req,res)=>{
@@ -118,9 +119,9 @@ exports.ShowPaymentManually=async(req,res)=>{
         as:"BuildingDetails"
       }
     }])
-    res.status(200).json(ManualPayment)
+    return response.successResponse(res,ManualPayment)
   }
   catch(err){
-    res.status(400).json({message:err.message})
-  }
+    return response.failedResponse(res,err.message)
+ }
 }

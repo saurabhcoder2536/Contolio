@@ -1,12 +1,13 @@
 const Owners=require('../models/Owner');
+const response=require('../helper/response')
 
 exports.ShowOwners=async(req,res)=>{
 try{
 const OwnersDetails=await Owners.find({});
-res.status(200).json({OwnersDetails});
+return response.successResponse(res,OwnersDetails)
 }
 catch(err){
-    res.status(400).json({message:err.message})
+    return response.failedResponse(res,err.message)
 }
 }
 
@@ -19,20 +20,20 @@ exports.CreateOwner=async(req,res)=>{
         Email,
         Remarks
     })
-    res.status(200).json({message:"Owners added Sucessfully"})
+    return response.successResponse(res,"owner added successfully")
 }
 catch(err){
-    res.status(401).json({message:err.message})
+    return response.failedResponse(res,err.message)
 }
 }
 
 exports.RemoveOwner=async(req,res)=>{
     try{
      await Owners.deleteOne({_id:req.body._id})
-     res.status(200).json({message:"Owners removed Successfully"})
+     return response.successResponse(res,"owner removed successfully")
     }
     catch(err){
-        res.status(400).json({message:message.err})
+        return response.failedResponse(res,err.message)
     }
 }
 
@@ -47,9 +48,9 @@ exports.ChangeStatus=async(req,res)=>{
         Change="Active"
        }
        await Owners.updateOne({_id:req.body._id},{Status:Change})
-       res.status(200).json({message:"User Status Changed succesfully"})
+       return response.successResponse(res,"user status changed successfully")
        }
        catch(err){
-           res.status(400).json({message:err.message})
+          return response.failedResponse(res,err.message)
        }
 }

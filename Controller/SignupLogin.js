@@ -1,6 +1,7 @@
 const SignupLogin = require("../models/SignupLogin");
 const Jwt= require("jsonwebtoken")
 const Bcrypt=require('bcrypt');
+const response=require('../helper/response')
 exports.Login_User = async (req, res) => {
   try {
     // const Management_Users =await SignupLogin.create({
@@ -18,7 +19,7 @@ exports.Login_User = async (req, res) => {
     console.log("======",token)
     return res.send({data:FindId,token:token})
   } catch (err) {
-    res.status(400).json({ message: err.message });
+  return response.failedResponse(res,err.message)
   }
 };
 exports.EditProfile = async (req, res) => {
@@ -30,10 +31,10 @@ exports.EditProfile = async (req, res) => {
           const ProfileChanges = await SignupLogin.updateOne(
     { Name:FinData.Name},{Name, Email, Phone, Role, Country, Company, Office_Contact}
      );
- return res.status(200).json({message:ProfileChanges})
+     return response.successResponse(res,ProfileChanges)
     }
     catch(err){
-        res.status(400).json(err.message)
+        return response.failedResponse(res,err.message)
     }
 };
 exports.ChangePassword=async(req,res)=>{
@@ -47,9 +48,9 @@ const Auth=await Bcrypt.compare(PasswordInput,CurrentPassword)
 if(Auth){
     console.log('aaaaaaaaaaaaaaaaaaaaaa')
 await SignupLogin.updateOne({Password:CurrentPassword},{Password:req.body.NewPassword})
-res.status(200).json({message:"Password Changed Succesfully"})
+return response.successResponse(res,"password changed successfully")
 }
     }catch(err){
-        res.status(400).json(err.message)
+        return response.failedResponse(res,err.message)
     }
 }

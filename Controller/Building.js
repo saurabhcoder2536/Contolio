@@ -1,6 +1,7 @@
 const { default: mongoose } = require("mongoose");
 const NewBuilding = require("../models/Buildings");
 const UnitsAvailable = require("../models/Units");
+const response=require('../helper/response')
 exports.ShowBuildings = async (req, res) => {
   try {
     const TotalData = await NewBuilding.aggregate([
@@ -13,14 +14,20 @@ exports.ShowBuildings = async (req, res) => {
         },
       },
     ]);
-    for (let i = 0; i < TotalData.length; i++) {
-      let CountUnit = 0;
-      CountUnit = TotalData[i].Units.length;
-      TotalData[i].Units = CountUnit;
+    if(TotalData) {
+      for (let i = 0; i < TotalData.length; i++) {
+        let CountUnit = 0;
+        CountUnit = TotalData[i].Units.length;
+        TotalData[i].Units = CountUnit;
+      }
+      return response.successResponse(res,TotalData)
     }
-    res.status(200).json({ TotalData });
+    else {
+      //something went Wrong
+    }
+
   } catch (err) {
-    res.status(400).json({ message: err.message });
+ return response.failedResponse(res,err.message)
   }
 };
 
@@ -35,9 +42,9 @@ exports.AddBuilding = async (req, res) => {
       Description,
       Admin,
     });
-    res.status(200).json({ message: "building add successfully" });
+    return response.successResponseWithData(res,"Building added Successful",Building)
   } catch (err) {
-    res.status(400).json(err.message);
+    return response.failedResponse(res,err.message)
   }
 };
 
@@ -45,9 +52,9 @@ exports.RemoveBuilding = async (req, res) => {
   try {
     await NewBuilding.deleteOne({ _id: req.body._id });
     await UnitsAvailable.deleteMany({ BuildingId: req.body._id });
-    res.status(200).json({ message: "Building removed Sucessfully" });
+    return response.successResponse(res,"Building Removed Successful")
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    return response.failedResponse(res,err.message)
   }
 };
 exports.ShowUnitWise = async (req, res) => {
@@ -76,7 +83,8 @@ exports.ShowUnitWise = async (req, res) => {
         foreignField:"_id",
         as:"BuildingDetails"
     }
-},{
+},
+{
         $lookup:{
             from:"management_users",
             localField:"BuildingDetails.Admin",
@@ -84,7 +92,8 @@ exports.ShowUnitWise = async (req, res) => {
             as:"AdminDetails"
         }
     
-},{
+},
+{
     $unwind:"$AdminDetails"
 },{
     $project:{
@@ -96,10 +105,10 @@ exports.ShowUnitWise = async (req, res) => {
         UnitNo:"$UnitNo",
         UnitId:"$_id"
     }
-}])
-    res.status(200).json({ FilteredData });
+  }])
+   return response.successResponse(res,FilteredData)
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    return response.failedResponse(res,err.message)
   }
 };
 exports.ChangeStatus = async (req, res) => {
@@ -113,17 +122,17 @@ exports.ChangeStatus = async (req, res) => {
     } else {
       await NewBuilding.updateOne({ _id: req.body._id }, { Status: "active" });
     }
-    res.status(200).json({ message: "status changed succesfully" });
+    return response.successResponse(res,"Status Changed successfully")
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    return response.failedResponse(res,err.message)
   }
 };
 exports.RemoveUnitWise=async(req,res)=>{
     try{
     await UnitsAvailable.deleteOne({_id:req.body._id})
-    res.status(200).json({message:"Unit removed Successfully"})
+    return response.successResponse(res,"Unit Removed Successful")
     }
     catch(err){
-        res.status(400).json(err.message)
+       return response.failedResponse(res,err.message)
     }
 }

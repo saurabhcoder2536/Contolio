@@ -1,5 +1,6 @@
 const { default: mongoose } = require('mongoose');
 const Contract=require('../models/Contracts');
+const response=require('../helper/response')
 exports.CreateContract=async(req,res)=>{
 try{
         const NewContract=new Contract({
@@ -11,13 +12,13 @@ try{
             Status:req.body.Status
         })
         NewContract.save().then(()=>{
-            res.send('Sucessfully Contracts added')
+            return response.successResponse(res,"contract added successful")
         }).catch(err=>{
-            res.send("aaaaaaaaaaaaa",err.message)
+            return response.failedResponse(res,err.message)
         })
         
 }catch(err){
-    res.status(400).json({message:err.message})
+    return response.failedResponse(res,err.message)
 }
 }
 exports.ShowContracts=async(req,res)=>{
@@ -30,10 +31,10 @@ exports.ShowContracts=async(req,res)=>{
             as:"Contracts"
         }
      }])
-     res.status(200).json({Contracts})
+     return response.successResponse(res,Contracts)
     }
     catch(err){
-        res.status(400).json({message:err.message})
+        return response.failedResponse(res,err.message)
     }
 }
 
@@ -43,11 +44,11 @@ exports.RemoveContract=async(req,res)=>{
         _id:req.params._id
      })
      if(ContractDel){
-        res.status(200).json({message:"Contract remove succesfully"})
+        return response.successResponse(res,"Contract removed successful")
      }
     }
     catch(err){
-        res.status(400).json({message:err.message})
+        return response.failedResponse(res,err.message)
     }
 }
 exports.ContractWise=async(req,res)=>{
@@ -71,9 +72,9 @@ exports.ContractWise=async(req,res)=>{
             as:"BuildingDetails"
         }
     }])
-    res.status(200).json(ContractWise)
+    return response.successResponse(res,ContractWise)
     }
     catch(err){
-        res.status(400).json({message:err.message})
+        return response.failedResponse(res,err.message)
     }
 }

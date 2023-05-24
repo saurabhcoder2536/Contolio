@@ -4,6 +4,7 @@ const MaintainModels=require("../models/Maintain/Maintain")
 const Unit=require('../models/Units')
 const Tenant=require('../models/Tenant');
 const { default: mongoose } = require("mongoose");
+const response=require('../helper/response');
 exports.AddExpert = async (req, res) => {
   try {
    const Expert=new ExpertModel({
@@ -14,12 +15,12 @@ exports.AddExpert = async (req, res) => {
     Images:req.file.originalname
    })
    Expert.save().then(()=>{
-     res.status(200).json({message:"Expert add Succesfully"})
+    return response.successResponse(res,"expert added successfully")
    }).catch(err=>{
-    res.status(400).json(err.message)
+   return response.failedResponse(res,err.message)
    })
   } catch (err) {
-    res.status(400).json(err.message);
+   return response.failedResponse(res,err.message)
   }
 };
 
@@ -44,13 +45,13 @@ exports.AddExpenses=async(req,res)=>{
       Images:req.file.originalname
     })
     AddExpenses.save().then(()=>{
-        res.status(200).json({message:"Expenses added Succesfully"})
+      return response.successResponse(res,"expenses added successfully")
       }).catch(err=>{
-       res.status(400).json(err.message)
+        return response.failedResponse(res,err.message)
       })
     }
     catch(err){
-        res.status(400).json(err.message)
+      return response.failedResponse(res,err.message)
     }
 }
      
@@ -76,13 +77,13 @@ exports.AddExpenses=async(req,res)=>{
            Images:req.file.originalname
          })
          MaintainModel.save().then(()=>{
-             res.status(200).json({message:"Maintenance added Succesfully"})
+          return response.successResponse(res,"maintenance added successfully")
            }).catch(err=>{
-            res.status(400).json(err.message)
+            return response.failedResponse(res,err.message)
            })
          }
          catch(err){
-             res.status(400).json(err.message)
+          return response.failedResponse(res,err.message)
          }
 }
 exports.MaintenanceRequest=async(req,res)=>{
@@ -116,10 +117,10 @@ exports.MaintenanceRequest=async(req,res)=>{
       as:"ExpensesDetails"
     }
   }])
-  res.status(200).json(MaintenanceRequest)
+  return response.successResponse(res,MaintenanceRequest)
   }
   catch(err){
-    res.status(400).json({message:err.message})
+    return response.failedResponse(res,err.message)
   }
 }
 
@@ -144,19 +145,19 @@ exports.EditMaintainRequest=async(req,res)=>{
     Description:req.body.Description,
     Images:req.file.originalname
   })
-   res.status(200).json({EditMaintainRequest})
+  return response.successResponse(res,EditMaintainRequest)
    }
    catch(err){
-       res.status(400).json(err.message)
+    return response.failedResponse(res,err.message)
    }
 }
 exports.RemoveExpert=async(req,res)=>{
   try{
     const{id}=req.body;
     const RemoveExpert=await ExpertModel.findByIdAndDelete(id);
-    res.status(200).json({message:"Expert Removed Succesfully"})
+    return response.successResponse(res,"expert removed successfully")
   }
   catch(err){
-    res.status(400).json({message:err.message})
+    return response.failedResponse(res,err.message)
   }
 }

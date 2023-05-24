@@ -1,4 +1,6 @@
 const Tenant = require("../models/Tenant");
+const mongoose=require('mongoose')
+const response=require('../helper/response')
 exports.NewTenant = async (req, res) => {
   try {
     const { Name, Email, Payment, Phone, Contract_Id, Unit_No } = req.body;
@@ -10,9 +12,9 @@ exports.NewTenant = async (req, res) => {
       Phone,
       Contract_Id,
     });
-    res.status(200).json({ message: "Tenant added succesfully" });
+   return response.successResponse(res,"Tenant added successfully")
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    return response.failedResponse(res,err.message)
   }
 };
 exports.TenantRequests = async (req, res) => {
@@ -27,13 +29,14 @@ exports.TenantRequests = async (req, res) => {
         },
       },
     ]);
-    res.status(200).json(TenantRequests);
+    return response.successResponse(res,TenantRequests)
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    return response.failedResponse(res,err.message)
   }
 };
 exports.TenantFullDetails = async (req, res) => {
   try {
+    console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
     const TenantFullDetails = await Tenant.aggregate([
       {
         $match: {
@@ -73,9 +76,9 @@ exports.TenantFullDetails = async (req, res) => {
         },
       },
     ]);
-    res.status(200).json(TenantFullDetails);
+    return response.successResponse(res,TenantFullDetails)
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    return response.failedResponse(res,err.message)
   }
 };
 exports.EditTenantDetails=async(req,res)=>{
@@ -93,19 +96,19 @@ exports.EditTenantDetails=async(req,res)=>{
         req.params._id,
         Payload
     )
-    res.status(200).json(ChangedTenantDetails)
+    return response.successResponse(res,ChangedTenantDetails)
     }
     catch(err){
-        res.status(400).json({message:err.message})
+      return response.failedResponse(res,err.message)
     }
 }
 exports.RemoveTenant=async(req,res)=>{
   try{
     const{id}=req.body;
   const RemoveTenant=await Tenant.findByIdAndDelete(id)
-  res.status(200).json({message:"Tenant Removed Succesfully"})
+  return response.successResponse(res,"Tenant removed successfully")
   }
   catch(err){
-    res.status(400).json({message:err.message})
+    return response.failedResponse(res,err.message)
   }
 }

@@ -1,11 +1,12 @@
 const product = require('../models/contact us')
+const response=require('../helper/response')
 exports.ContactUs = async (req, res) => {
     const {Name,Email,Subject,Description} = req.body;
     try {
     const user=await product.create({Name,Email,Subject,Description})
-    res.status(201).json({user})
+    return response.successResponse(res,user)
     } catch (error) {
-        res.status(400).json({message:error.message});
+    return response.failedResponse(res,error.message)
     }
 }
 
